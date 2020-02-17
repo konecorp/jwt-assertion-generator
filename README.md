@@ -3,10 +3,11 @@
 Mainly for this Salesforce OAuth2 flow: https://help.salesforce.com/articleView?id=remoteaccess_oauth_jwt_flow.htm&type=0
 
 Build: `mvn clean package`
+
 Run: 
 ```
 java -jar target/jwt_assert-1.0-SNAPSHOT.jar \
---audience you_audience \
+--audience your_audience \
 --issuer your_issuer \
 --subject your_subject \
 --key /path/to/your/pkcs8_private_key
