@@ -54,7 +54,11 @@ jobs:
           echo %JAVA_HOME%
           java -version
           mvn -X -B package --file pom.xml
-      - run: . $env:java_home\bin\native-image -jar target\jwt_assert-1.0-SNAPSHOT.jar
+      - name: build native image
+        shell: cmd
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+          %JAVA_HOME%\bin\native-image -jar target\jwt_assert-1.0-SNAPSHOT.jar
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
