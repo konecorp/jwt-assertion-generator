@@ -23,6 +23,7 @@ jobs:
         run: |
           ls -l target
           value=`cp target/net.majakorpi.jwt.jwtassertiongenerator target/jwtgen-${{ matrix.os }}`
+          chmod u+x target/jwtgen-${{ matrix.os }}
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
@@ -62,8 +63,11 @@ jobs:
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
+          ls -l
           ls -l target
-          value=`cp jwt_assert-1.0-SNAPSHOT target/jwtgen-${{ matrix.os }}`
+          cp jwt_assert-1.0-SNAPSHOT target/jwtgen-${{ matrix.os }}
+          ls -l target
+          ls -l
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
