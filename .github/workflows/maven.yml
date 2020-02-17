@@ -18,15 +18,15 @@ jobs:
       - run: gu install native-image
       - name: Build with Maven
         run: mvn -B package --file pom.xml -P build-native
-#      - name: Rename the artifact to OS-unique name
-#        shell: bash
-#        run: |
-#          value=`cp build/graal/checksum build/graal/checksum-${{ matrix.os }}`
-#      - name: Publish artifact
-#        uses: actions/upload-artifact@master
-#        with:
-#          name: checksum-${{ matrix.os }}
-#          path: build/graal
+      - name: Rename the artifact to OS-unique name
+        shell: bash
+        run: |
+          value=`cp target/net.majakorpi.jwt.JwtAssertionGenerator target/jwtgen-${{ matrix.os }}`
+      - name: Publish artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: jwtgen-${{ matrix.os }}
+          path: target
 
   build-windows:
     runs-on: ${{ matrix.os }}
@@ -49,12 +49,12 @@ jobs:
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
           mvn -B package --file pom.xml -P build-native
-#      - name: Rename the artifact to OS-unique name
-#        shell: bash
-#        run: |
-#          value=`cp build/graal/checksum build/graal/checksum-${{ matrix.os }}`
-#      - name: Publish artifact
-#        uses: actions/upload-artifact@master
-#        with:
-#          name: checksum-${{ matrix.os }}.exe
-#          path: build/graal
+      - name: Rename the artifact to OS-unique name
+        shell: bash
+        run: |
+          value=`cp target/net.majakorpi.jwt.JwtAssertionGenerator target/jwtgen-${{ matrix.os }}`
+      - name: Publish artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: jwtgen-${{ matrix.os }}
+          path: target
