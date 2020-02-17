@@ -42,9 +42,8 @@ jobs:
         with:
           graalvm-version: '19.3.0.2.java11'
       - run: java -version
-      - run: echo %JAVA_HOME%
-      - run: dir %JAVA_HOME%\bin
-      - run: $JAVA_HOME\bin\native-image.exe
+      - run: echo $env:java_home
+      - run: dir $env:java_home\bin
       - name: Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools
         run: |
           choco install visualstudio2017-workload-vctools
@@ -52,14 +51,15 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          echo $JAVA_HOME
+          echo %JAVA_HOME%
           java -version
           mvn -X -B package --file pom.xml -P build-native
+      - run: & $env:java_home\bin\native-image -jar target\jwt_assert-1.0-SNAPSHOT.jar
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
           ls -l target
-          value=`cp target/net.majakorpi.jwt.JwtAssertionGenerator target/jwtgen-${{ matrix.os }}`
+          value=`cp target/net.majakorpi.jwt.jwtassertiongenerator target/jwtgen-${{ matrix.os }}`
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
