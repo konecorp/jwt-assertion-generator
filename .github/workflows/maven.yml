@@ -42,8 +42,8 @@ jobs:
         with:
           graalvm-version: '19.3.0.2.java11'
       - run: java -version
-      - run: echo $JAVA_HOME
-      - run: dir $JAVA_HOME\bin
+      - run: echo %JAVA_HOME%
+      - run: dir %JAVA_HOME%\bin
       - run: $JAVA_HOME\bin\native-image.exe
       - name: Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools
         run: |
