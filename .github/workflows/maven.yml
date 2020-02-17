@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@master
         with:
           name: jwtgen-${{ matrix.os }}
-          path: target
+          path: target/jwtgen-${{ matrix.os }}
 
   build-windows:
     runs-on: ${{ matrix.os }}
@@ -53,15 +53,15 @@ jobs:
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
           echo %JAVA_HOME%
           java -version
-          mvn -X -B package --file pom.xml -P build-native
-      - run: & $env:java_home\bin\native-image -jar target\jwt_assert-1.0-SNAPSHOT.jar
+          mvn -X -B package --file pom.xml
+      - run: . $env:java_home\bin\native-image -jar target\jwt_assert-1.0-SNAPSHOT.jar
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
           ls -l target
-          value=`cp target/net.majakorpi.jwt.jwtassertiongenerator target/jwtgen-${{ matrix.os }}`
+          value=`cp jwt_assert-1.0-SNAPSHOT target/jwtgen-${{ matrix.os }}`
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
           name: jwtgen-${{ matrix.os }}
-          path: target
+          path: target/jwtgen-${{ matrix.os }}
