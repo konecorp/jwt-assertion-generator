@@ -41,6 +41,8 @@ jobs:
         with:
           graalvm-version: '19.3.0.2.java11'
       - run: java -version
+      - run: gu install native-image
+      - run: echo $JAVA_HOME
       - name: Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools
         run: |
           choco install visualstudio2017-workload-vctools
@@ -48,7 +50,9 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          mvn -B package --file pom.xml -P build-native
+          echo $JAVA_HOME
+          java -version
+          mvn -X -B package --file pom.xml -P build-native
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
