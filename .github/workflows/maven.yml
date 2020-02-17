@@ -21,7 +21,8 @@ jobs:
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
-          value=`cp target/net.majakorpi.jwt.JwtAssertionGenerator target/jwtgen-${{ matrix.os }}`
+          ls -l target
+          value=`cp target/net.majakorpi.jwt.jwtassertiongenerator target/jwtgen-${{ matrix.os }}`
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
@@ -41,8 +42,9 @@ jobs:
         with:
           graalvm-version: '19.3.0.2.java11'
       - run: java -version
-      - run: gu install native-image
       - run: echo $JAVA_HOME
+      - run: dir $JAVA_HOME\bin
+      - run: $JAVA_HOME\bin\native-image.exe
       - name: Set up Visual C Build Tools Workload for Visual Studio 2017 Build Tools
         run: |
           choco install visualstudio2017-workload-vctools
@@ -56,6 +58,7 @@ jobs:
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
+          ls -l target
           value=`cp target/net.majakorpi.jwt.JwtAssertionGenerator target/jwtgen-${{ matrix.os }}`
       - name: Publish artifact
         uses: actions/upload-artifact@master
