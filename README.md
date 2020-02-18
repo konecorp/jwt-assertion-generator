@@ -25,10 +25,11 @@ openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -out private_key.pk
 
 ## GraalVM Native Build
 
+Native macOS, Linux and Windows builds to run the command directly without Java. Doesn't work on Windows for now.
+Use the instructions above unless you're adventurous.
+
 Requires a GraalVM JDK and to set `JAVA_HOME=/path/to/a/graalvm/jdk`.
 
 Build with: `mvn clean package -P build-native`
 
 Executable will be written to: `target/net.majakorpi.jwt.JwtAssertionGenerator`
-
-(Works on my machine)
