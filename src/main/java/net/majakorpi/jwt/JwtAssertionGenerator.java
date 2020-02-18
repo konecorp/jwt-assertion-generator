@@ -36,7 +36,7 @@ public class JwtAssertionGenerator implements Callable<Integer> {
     @CommandLine.Option(names = {"--verbose"}, description = "Output token payload without base64 encoding")
     private Boolean verbose = false;
 
-    private Base64.Encoder encoder = Base64.getUrlEncoder();
+    private Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
 
     private static final String UTF_8 = "UTF-8";
     private static final String DOT = ".";
@@ -55,7 +55,7 @@ public class JwtAssertionGenerator implements Callable<Integer> {
 
         try {
             // Prepare claims
-            Long exp = System.currentTimeMillis() / 1000 + validitySeconds;
+            Long exp = (System.currentTimeMillis() / 1000) + validitySeconds;
             String jti = UUID.randomUUID().toString();
             String payload = String.format(BODY_TEMPLATE, issuer, subject, audience, exp, jti);
 
@@ -71,9 +71,9 @@ public class JwtAssertionGenerator implements Callable<Integer> {
             token.append(encoder.encodeToString(HEADER.getBytes(UTF_8)))
                     .append(DOT)
                     .append(encoder.encodeToString(payload.getBytes(UTF_8)));
-            String signedPayload = signPayload(token.toString());
+            String headerAndPayload = token.toString();
             token.append(DOT)
-                    .append(encoder.encodeToString(signedPayload.getBytes(UTF_8)));
+                    .append(encoder.encodeToString(signPayload(headerAndPayload)));
 
             System.out.println(token.toString());
             return 0;
@@ -83,14 +83,13 @@ public class JwtAssertionGenerator implements Callable<Integer> {
         }
     }
 
-    private String signPayload(String payload) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
+    private byte[] signPayload(String payload) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             InvalidKeyException, SignatureException {
         PrivateKey privateKey = getPrivateKey(keyFile);
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);
         signature.update(payload.getBytes(UTF_8));
-        String signedPayload = encoder.encodeToString(signature.sign());
-        return signedPayload;
+        return signature.sign();
     }
 
     private PrivateKey getPrivateKey(File keyFile) throws IOException, NoSuchAlgorithmException,
