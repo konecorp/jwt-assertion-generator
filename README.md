@@ -4,7 +4,10 @@ Mainly for this Salesforce OAuth2 flow: https://help.salesforce.com/articleView?
 
 Download a pre-built Java jar file from [here](https://github.com/mmajis/JWTAssertionGenerator/releases/download/v1.0/jwt_assert-1.0.jar). 
 
-Run: 
+# Using
+
+## Run with java
+
 ```
 java -jar jwt_assert-1.0.jar \
 --audience your_audience \
@@ -13,7 +16,19 @@ java -jar jwt_assert-1.0.jar \
 --key /path/to/your/pkcs8_private_key
 ```
 
-To create a signing key:
+## Run without java
+
+Requires bash
+
+```
+AUDIENCE=your_audience \
+ISSUER=your_issuer \
+SUBJECT=your_subject \
+KEY=/path/to/your_private.key \
+./generate-token.sh
+```
+
+## To create a signing key:
 
 ```
 openssl genrsa -des3 -passout pass:SomePassword -out server.pass.key 2048
@@ -22,6 +37,8 @@ openssl req -new -key server.key -out server.csr
 openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out server.crt
 openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -out private_key.pkcs8 -nocrypt
 ```
+
+# Building
 
 ## Build from source
 
