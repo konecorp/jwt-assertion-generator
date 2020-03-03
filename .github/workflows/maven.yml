@@ -59,11 +59,11 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
-          %JAVA_HOME%\bin\native-image --enable-all-security-services -jar target\jwt_assert-1.0-SNAPSHOT.jar
+          %JAVA_HOME%\bin\native-image --enable-all-security-services -jar target\jwt_assert-*.jar
       - name: Rename the artifact to OS-unique name
         shell: bash
         run: |
-          cp jwt_assert-1.0-SNAPSHOT.exe target/jwtgen.exe
+          cp jwt_assert*.exe target/jwtgen.exe
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
