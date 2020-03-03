@@ -16,8 +16,6 @@ import picocli.CommandLine;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -96,8 +94,8 @@ class JwtAssertionGeneratorTest {
                 @Override
                 public void execute() throws Throwable {
                     Algorithm algorithm = Algorithm.RSA256(getPublicCert(
-                            this.getClass().getResource("/public.crt.pkcs8").getPath()),
-                            getPrivateKey(this.getClass().getResource("/private.key.pkcs8").getPath()));
+                            this.getClass().getResourceAsStream("/public.crt.pkcs8")),
+                            getPrivateKey(this.getClass().getResourceAsStream("/private.key.pkcs8")));
                     JWTVerifier verifier = JWT.require(algorithm)
                             .withIssuer(TESTISSUER)
                             .withAudience(TESTAUDIENCE)
@@ -138,8 +136,8 @@ class JwtAssertionGeneratorTest {
                 @Override
                 public void execute() throws Throwable {
                     Algorithm algorithm = Algorithm.RSA256(getPublicCert(
-                            this.getClass().getResource("/public.crt.pkcs8").getPath()),
-                            getPrivateKey(this.getClass().getResource("/private.key.pkcs8").getPath()));
+                            this.getClass().getResourceAsStream("/public.crt.pkcs8")),
+                            getPrivateKey(this.getClass().getResourceAsStream("/private.key.pkcs8")));
                     JWTVerifier verifier = JWT.require(algorithm)
                             .withIssuer(TESTISSUER)
                             .withAudience(TESTAUDIENCE)
@@ -156,19 +154,24 @@ class JwtAssertionGeneratorTest {
         }
     }
 
-    private RSAPrivateKey getPrivateKey(String keyPath) throws IOException, NoSuchAlgorithmException,
+    private RSAPrivateKey getPrivateKey(InputStream keyStream) throws IOException, NoSuchAlgorithmException,
             InvalidKeySpecException {
-        byte[] keyBytes = Files.readAllBytes(Paths.get(keyPath));
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[1024];
+        while ((nRead = keyStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, nRead);
+        }
+        byte[] keyBytes = buffer.toByteArray();
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
         PrivateKey privateKey = kf.generatePrivate(spec);
         return (RSAPrivateKey) privateKey;
     }
 
-    private RSAPublicKey getPublicCert(String keyPath) throws IOException, CertificateException {
+    private RSAPublicKey getPublicCert(InputStream keyStream) throws IOException, CertificateException {
         CertificateFactory fact = CertificateFactory.getInstance("X.509");
-        FileInputStream is = new FileInputStream(keyPath);
-        X509Certificate cer = (X509Certificate) fact.generateCertificate(is);
+        X509Certificate cer = (X509Certificate) fact.generateCertificate(keyStream);
         PublicKey key = cer.getPublicKey();
         return (RSAPublicKey) key;
     }
