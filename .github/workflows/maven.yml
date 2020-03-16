@@ -35,8 +35,8 @@ jobs:
       - name: Publish artifact
         uses: actions/upload-artifact@master
         with:
-          name: jwt_assert-${{ PROJECT_VERSION }}
-          path: target/jwt_assert-${{ PROJECT_VERSION }}
+          name: jwt_assert-${{ env.PROJECT_VERSION }}
+          path: target/jwt_assert-${{ env.PROJECT_VERSION }}
 
   build-native-ubuntu-mac:
     runs-on: ${{ matrix.os }}
