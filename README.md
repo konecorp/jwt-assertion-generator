@@ -50,7 +50,7 @@ KEY=/path/to/your_private.key \
 
 ## Run with Java
 
-Download the jar executable from [here]().
+Download the executable jar file from [here](https://github.com/konecorp/jwt-assertion-generator/releases/download/v1.0/jwt_assert-1.0.jar).
 
 Run like this:
 
