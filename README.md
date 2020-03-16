@@ -1,34 +1,29 @@
 # JWT Assertion Token Generator
 
-Mainly for this Salesforce OAuth2 flow: https://help.salesforce.com/articleView?id=remoteaccess_oauth_jwt_flow.htm&type=0
+Generator utilities for JWT Assertion tokens used as authentication for the [Salesforce Oauth2 JWT Bearer flow](https://help.salesforce.com/articleView?id=remoteaccess_oauth_jwt_flow.htm&type=0).
 
-Download a pre-built Java jar file from [here](https://github.com/mmajis/JWTAssertionGenerator/releases/download/v1.0/jwt_assert-1.0.jar). 
+[KONE API Services](https://developer.kone.com/) use this OAuth2 flow to authenticate the API client and provide an access token for API requests.
+
+The tools provided here are meant to help with testing the [KONE API Services](https://developer.kone.com/).
 
 # Using
 
-## Run with java
+There are two token generator implementations:
 
-```
-java -jar jwt_assert-1.0.jar \
---audience your_audience \
---issuer your_issuer \
---subject your_subject \
---key /path/to/your/pkcs8_private_key
-```
+* Bash shell implementation
+* Java implementation
 
-## Run without java
+The Bash implementation is simpler. Prefer that if you can run Bash scripts. The Java implementation works in environments without the Bash shell.
 
-Requires bash
+Both implementations require that you first generate a private signing key. The key is used for signing the generated JWT token.
 
-```
-AUDIENCE=your_audience \
-ISSUER=your_issuer \
-SUBJECT=your_subject \
-KEY=/path/to/your_private.key \
-./generate-token.sh
-```
+## Create a signing key
 
-## To create a signing key:
+The `openssl` commands below will create a private key for token signing.
+
+The created `private.key` file is used with the Bash JWT generator script. The Java version requires the key in a different format (`private_key.pkcs8`), also generated with the commands below.
+
+The commands also create a public certificate (`server.crt`) signed with the private key. The certificate is sent to KONE during the API subscription process and later used to validate your JWT Bearer Assertion tokens.
 
 ```
 openssl genrsa -des3 -passout pass:SomePassword -out server.pass.key 2048
@@ -38,7 +33,38 @@ openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key -out serv
 openssl pkcs8 -topk8 -inform PEM -outform DER -in server.key -out private_key.pkcs8 -nocrypt
 ```
 
+
+## Run with Bash
+
+Clone this repository to get the `generate-token.sh` script.
+
+Run `generate-token.sh` like this:
+
+```
+AUDIENCE=your_audience \
+ISSUER=your_issuer \
+SUBJECT=your_subject \
+KEY=/path/to/your_private.key \
+./generate-token.sh
+```
+
+## Run with Java
+
+Download the jar executable from [here]().
+
+Run like this:
+
+```
+java -jar jwt_assert-1.0.jar \
+--audience your_audience \
+--issuer your_issuer \
+--subject your_subject \
+--key /path/to/your/pkcs8_private_key
+```
+
 # Building
+
+The following are instructions to build the Java based executables for this project. If you only want to run the token generators, see the Using section above.
 
 ## Build from source
 
@@ -50,8 +76,9 @@ Build on Windows: Run `mvnw.cmd clean package`
 
 ### GraalVM Native Build
 
+**Use the instructions above unless you're adventurous.**
+
 Native macOS, Linux and Windows builds to run the command directly without Java. Doesn't work on Windows for now.
-Use the instructions above unless you're adventurous.
 
 Requires a GraalVM JDK and to set `JAVA_HOME=/path/to/a/graalvm/jdk`.
 
