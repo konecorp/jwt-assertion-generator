@@ -5,6 +5,7 @@ on: [push]
 jobs:
 
   build-jar:
+    runs-on: ubuntu-latest
     name: Build executable jar
     steps:
       - uses: actions/checkout@v1
