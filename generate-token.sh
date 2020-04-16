@@ -33,7 +33,8 @@ function generateUuid()
 
 generateUuid
 
-EXPIRY="$(date '+%s' -d "3600 seconds")"
+EXPIRY="$(date '+%s')"
+EXPIRY=$((EXPIRY+3600))
 JTI="$uuid"
 HEADER="{\"alg\":\"RS256\"}"
 BODY="{\"iss\": \"${ISSUER}\", \"sub\": \"${SUBJECT}\", \"aud\": \"${AUDIENCE}\", \"exp\": ${EXPIRY}, \"jti\": \"${JTI}\"}"
